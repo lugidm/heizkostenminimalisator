@@ -13,7 +13,13 @@ Software to control the inlet air of a stove with temperature sensor and communi
 	* When temperature becomes steady again (air inlet should `hopefully` be at that point around 12% open) close it completely
 	* Keep logging and doing curve analysis for another 30 minutes to be sure, the fire is not relit again 
   
-  
+## KONSTANTEN
+- MOTOR_OUTPUT_PIN `integer`
+- WRITE_AIR_INLET_CLOSE_VOLTAGE `float`
+- WRITE_AIR_INLET_OPEN_VOLTAGE `float`
+- READ_AIR_INLET_OPEN_VOLTAGE `float`
+
+
   
 ## Project Components
 ### [Thermocouple Digital Converter](https://cdn-shop.adafruit.com/datasheets/MAX31855.pdf)
