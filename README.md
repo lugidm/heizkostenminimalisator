@@ -20,10 +20,12 @@ Software to control the inlet air of a stove with temperature sensor and communi
 - WRITE_AIR_INLET_OPEN_VOLTAGE `float`
 - READ_AIR_INLET_OPEN_VOLTAGE `float`
 
-## Annahmen
-30minuten zuluft auf sobald ofentür geöffnet wird
-ca. 2h abbranddauer -> int-array größe ~ 120
+## Annahmen (von Lugi)
+30minuten zuluft auf sobald ofentür geöffnet wird  
+ca. 2h abbranddauer -> int-array größe ~ 120  
 
+motorstellung: pin 25  
+Pin 16: Kontakt fürs ofentierl inf. ohm = OFFEN  
   
 ## Project Components
 ### [Thermocouple Digital Converter](https://cdn-shop.adafruit.com/datasheets/MAX31855.pdf)
