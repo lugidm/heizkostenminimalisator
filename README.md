@@ -9,7 +9,7 @@ Software to control the inlet air of a stove with temperature sensor and communi
 	* __Possible extension: Communicate over MQTT if activated__
 2. Interrupt happened (stove door opened)
 	* Check if we are in fire-state (logging temperature etc.) -> if not continue normally, otherwise, somebody might have re-lit the fire -> ???
-	* Open air inlet completely -> 10V on MOTOR_OUTPUT_PIN until reference signal on MOTOR_INPUT_PIN matches READ_AIR_INLET_OPEN_VOLTAGE
+	* Open air inlet completely -> 10V on PIN_MOTOR_OUT until reference signal on MOTOR_INPUT_PIN matches READ_AIR_INLET_OPEN_VOLTAGE
 	* Start reading from PIN_TEMP_SENSOR if it does not change in 30 minutes close air inlet and go back to deep sleep (wait for interrupt)
 	* If temp-signal changes more then **5°** start logging the temperature in a [120x1] int-Array to conduct temperature curve analysis
 	* Every 5 minutes, conduct temp-curve analysis, if the curve is truely falling, divide current temperature in 8 closing segments (e.g. 160°-200° = completely open, 120°-160° = 87.7%open etc.)
@@ -17,7 +17,7 @@ Software to control the inlet air of a stove with temperature sensor and communi
 	* Keep logging and doing curve analysis for another 30 minutes to be sure, the fire is not relit again 
   
 ## CONSTANTS
-- MOTOR_OUTPUT_PIN `integer`
+- PIN_MOTOR_OUT `integer`
 - WRITE_AIR_INLET_CLOSE_VOLTAGE `float`
 - WRITE_AIR_INLET_OPEN_VOLTAGE `float`
 - READ_AIR_INLET_OPEN_VOLTAGE `float`
@@ -32,7 +32,7 @@ Pin 16: Kontakt fürs ofentierl inf. ohm = OFFEN
 ## Project Components
 ### [Thermocouple Digital Converter](https://cdn-shop.adafruit.com/datasheets/MAX31855.pdf)
 SPI-output as 14 bit signed (integer)
-### [Selfmade Voltage Stepper](https://www.falstad.com/circuit/circuitjs.html?ctz=CQAgjCAMB0l3BWEBmAHAJmgdgGzoRmACzICcpkORIC6NNkNApgLRhgBQA5iEXCOlSpe-ZOkYSOAJwF9wORn0ZgFUBpA4BjEctVKBQtTHiRkETKRwJSgrAixEEkIjlRJjkTgCUQl+Yyp-NTonRmRodzVOABNfHCD0ORVGOmimADMAQwBXABsAF2kdIKJUFMSokw4Ad14ygQr9QWENPlIaGyDXYWTwKGh4thhkIhUcCmRrVGIcc3CIDR4qZU7lhupJHzWwQRBtnaMRcDoJfoQa4t7rOjBcKG49wzEQOzpnyVrruI6bog2Lr5+brfDQyYFAp4ndRFYG9cHxFLwDg+V7fMqMPynOSRCQRB7A5qPYTIZAI+5gwx+VGY8BI2Kw1QEyDCVIZHIFDj0wziYQEhDxVlZPKFCkswx8slgKoAewEEECikg5Fp-TgYH5+GCcpQHDQKBAADEIJEpYw2CAACLZfIATwAOgBnADCNs0uSYHCAA)
+### [Selfmade Voltage Stepper](https://www.falstad.com/circuit/circuitjs.html?ctz=CQAgjCAMB0l3BWEBmAHAJmgdgGzoRmACzICcpkORIC6NNkNApgLRhgBQA5iKnCOlSpe-ZMhxQoHAMYgcQ8DkZ9GYJZJjxIydOT36DE9tGRYEWUlVJYwqBGDqbInAE4jV6lQIWqtHIpCkNKR0aozywmHgUNASbGDQpAhEWJCoYKR8GYLIAsjQEJDccgHgISWM6OjUjEUAShXggo3sjpKlDhoxCMURKHRmdDoaHADuwXSWE+BENWPTU31TRW5LEn3DjAhKK3IKUWuSVfAcDYMgU17L7VtdMD08fYLCG+IjqwpT59dgfh+R6iePnAfgaCHKYFwNE6kIktRApSQ8PuHAA9jMSjdyAJarBnNt8EcMcgOEA)
 
-Is driven by MOTOR_OUTPUT_PIN (analog) between the voltages WRITE_AIR_INLET_CLOSE_VOLTAGE to WRITE_AIR_INLET_OPEN_VOLTAGE
+Is driven by PIN_MOTOR_OUT (analog) between the voltages WRITE_AIR_INLET_CLOSE_VOLTAGE to WRITE_AIR_INLET_OPEN_VOLTAGE
 
