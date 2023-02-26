@@ -21,7 +21,6 @@ char Thermocouple::read_temperature(){
     Serial.print("Internal Temp = ");
    Serial.println(this->thermocouple.readInternal());
 
- 
 
    double c = thermocouple.readCelsius();
 

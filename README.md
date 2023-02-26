@@ -28,7 +28,11 @@ ca. 2h abbranddauer -> int-array größe ~ 120
 
 motorstellung: pin 25  
 Pin 16: Kontakt fürs ofentierl inf. ohm = OFFEN  
-  
+
+Beim Einschalten Ofentür auf!! (wegen Stromausfall)
+
+Bein Interrupt auch
+
 ## Project Components
 ### [Thermocouple Digital Converter](https://cdn-shop.adafruit.com/datasheets/MAX31855.pdf)
 SPI-output as 14 bit signed (integer)
