@@ -1,21 +1,25 @@
 #include "thermocouple.h"
 #include <SPI.h>
+#include <Wire.h>
 #include <Adafruit_MAX31855.h>
 
-bool Thermocouple::init_thermocouple(){
-    this->thermocouple = Adafruit_MAX31855(MAXCLK, MAXCS, MAXDO);
-    Serial.println("MAX31855 test");
-    // wait for MAX chip to stabilize
-    delay(500);
-    Serial.print("Initializing sensor..");
-    if (!thermocouple.begin()) {
-        Serial.println("ERROR.");
-    while (1) delay(10);
-    }
-    // OPTIONAL: Can configure fault checks as desired (default is ALL)
-    // Multiple checks can be logically OR'd together.
-    // thermocouple.setFaultChecks(MAX31855_FAULT_OPEN | MAX31855_FAULT_SHORT_VCC);  // short to GND fault is ignored    return true;
+Thermocouple::Thermocouple() : thermocouple(MAXCLK, MAXCS, MAXDO) {
+  //this->thermocouple((int8_t)MAXCLK, (int8_t)MAXCS, (int8_t)MAXDO);
+  //Adafruit_MAX31855 try_pout = Adafruit_MAX31855();
+  //try_pout = Adafruit_MAX31855(;
+  Serial.println("MAX31855 test");
+  // wait for MAX chip to stabilize
+  delay(500);
+  Serial.print("Initializing sensor..");
+  if (!this->thermocouple.begin()) {
+      Serial.println("ERROR.");
+  while (1) delay(10);
+  }
+  // OPTIONAL: Can configure fault checks as desired (default is ALL)
+  // Multiple checks can be logically OR'd together.
+  // thermocouple.setFaultChecks(MAX31855_FAULT_OPEN | MAX31855_FAULT_SHORT_VCC);  // short to GND fault is ignored    return true;
 }
+
 
 char Thermocouple::read_temperature(){
     Serial.print("Internal Temp = ");
@@ -51,5 +55,9 @@ char Thermocouple::read_temperature(){
  
 
    delay(1000);
+   return c;
 }
 
+bool Thermocouple::burning(){
+  return true;
+}

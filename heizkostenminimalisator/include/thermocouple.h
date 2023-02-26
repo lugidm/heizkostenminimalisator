@@ -7,6 +7,7 @@ class Thermocouple{
     private:
         Adafruit_MAX31855 thermocouple;
     public: 
-        bool init_thermocouple(){}
-        char read_temperature(){}
+        Thermocouple();
+        char read_temperature();
+        bool burning();
     };
