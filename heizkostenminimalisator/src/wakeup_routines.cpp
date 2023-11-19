@@ -1,20 +1,11 @@
+// Look at: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/deep-sleep-stub.html
+
+
 #include <esp_sleep.h>
 #include "wakeup_routines.h"
-#include "thermocouple.h"
 #include "pin_setup.h"
 
 RTC_DATA_ATTR struct WakeUpSettings* settings;
-
-
-void ARDUINO_ISR_ATTR onTimer(){
-    Serial.println("onTimerWasCalled");
-    Serial.flush();
-    //portENTER_CRITICAL_ISR(&settings->state_mux);
-    settings->state = STATE_TEMP_CHECK;
-    //portEXIT_CRITICAL_ISR(&settings->state_mux);
-    Serial.println("onTimerWasLeaving");
-}
-
 
 unsigned char handleWakeupRoutines(){
     esp_sleep_wakeup_cause_t wakeup_reason;
@@ -22,11 +13,11 @@ unsigned char handleWakeupRoutines(){
     Serial.println("");
     Serial.println(wakeup_reason);
     char state = 0;
-    switch(wakeup_reason)
-    {
+    switch(wakeup_reason){
     case ESP_SLEEP_WAKEUP_EXT0 : state = STATE_OVEN_DOOR; break;
     case ESP_SLEEP_WAKEUP_TIMER : state = STATE_TEMP_CHECK; break;
-    default : state = STATE_NORMAL_BOOT; break;
+    case ESP_SLEEP_WAKEUP_UNDEFINED : state = STATE_UNDEFINED; break;
+    default : state = STATE_UNDEFINED; break;
     }
     return state;
 }
@@ -34,4 +25,16 @@ unsigned char handleWakeupRoutines(){
 void setupWakeUpRoutines(WakeUpSettings* w_u_settings){
     esp_sleep_enable_timer_wakeup(SELF_CHECK_RATE*1000000);
     esp_sleep_enable_ext0_wakeup(PIN_STOVE_IN, 1);
+}
+
+// this function is weak linked -> it gets overwritten easily like this: esp_default_wake... has to be called immidiately in the beginnning
+void RTC_IRAM_ATTR esp_wake_deep_sleep(void){  
+    esp_default_wake_deep_sleep();
+
+
+}
+
+void sleepysloopy(){
+    delay(500);
+    esp_deep_sleep_start();
 }

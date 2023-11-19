@@ -59,5 +59,5 @@ char Thermocouple::read_temperature(){
 }
 
 bool Thermocouple::burning(){
-  return true;
+  return thermocouple.readCelsius()>40;
 }

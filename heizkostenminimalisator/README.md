@@ -4,7 +4,7 @@ Software to control the inlet air of a stove with temperature sensor and communi
 
 ## Basic Procedure
 1. Startup
-	* initialize all variables and create a interrupt for the stove doo (first check if it is already open -> 2.)
+	* initialize all variables and create a interrupt for the stove door (first check if it is already open -> 2.)
 	* __Possible extension: Check for 5 Minutes on a HTML-Server to check whether someone wants to change some parameters__
 	* __Possible extension: Communicate over MQTT if activated__
 2. Interrupt happened (stove door opened)
@@ -40,3 +40,14 @@ SPI-output as 14 bit signed (integer)
 
 Is driven by PIN_MOTOR_OUT (analog) between the voltages WRITE_AIR_INLET_CLOSE_VOLTAGE to WRITE_AIR_INLET_OPEN_VOLTAGE
 
+
+## FLASH image to ESP32:
+Ubuntu:
+	1. check where the ESP32 is connecting to in /dev/tty**** . Normally (/dev/ttyUSB0)
+	2. add your current user to dialout - group (sudo adduser <username> dialout)
+	3. change the owner of /dev/tty** to the current user: sudo chown username /dev/ttyUSB0
+Windows:
+	1. Check the port in device-manager
+
+Both:
+	Check the right port (COM6 or /dev/ttyUSB0) is taken in plaformio.io - file :)
