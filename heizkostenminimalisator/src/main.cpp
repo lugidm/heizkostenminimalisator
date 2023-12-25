@@ -19,7 +19,7 @@ void setup() {
   Motor motor = Motor();
   setupWakeUpRoutines(&wake_up_settings);
   unsigned char current_state = handleWakeupRoutines();
-  if(current_state == STATE_TEMP_CHECK){
+  if(current_state == INTERRUPT_TEMPERATURE_CHECK){
     Serial.println("STATE TEMP CHECK");
     if (!temperature_measurement_device.burning()){
       Serial.println("temperature sensor tells us that there is no fire");

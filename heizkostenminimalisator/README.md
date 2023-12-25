@@ -15,7 +15,10 @@ Software to control the inlet air of a stove with temperature sensor and communi
 	* Every 5 minutes, conduct temp-curve analysis, if the curve is truely falling, divide current temperature in 8 closing segments (e.g. 160°-200° = completely open, 120°-160° = 87.7%open etc.)
 	* When temperature becomes steady again (air inlet should `hopefully` be at that point around 12% open) close it completely
 	* Keep logging and doing curve analysis for another 30 minutes to be sure, the fire is not relit again 
-  
+
+## STATE CHART
+![plot](./documentation/State_chart.png?raw=true "State Chart")
+
 ## CONSTANTS
 - PIN_MOTOR_OUT `integer`
 - WRITE_AIR_INLET_CLOSE_VOLTAGE `float`

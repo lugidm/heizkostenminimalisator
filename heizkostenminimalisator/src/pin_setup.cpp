@@ -2,5 +2,5 @@
 #include <Arduino.h>
 
 void setup_pins(){
-    pinMode(PIN_STOVE_IN, INPUT_PULLUP);
+    pinMode(PIN_OVEN_DOOR, INPUT_PULLUP);
 }

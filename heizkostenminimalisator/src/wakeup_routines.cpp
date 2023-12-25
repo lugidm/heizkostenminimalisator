@@ -24,7 +24,7 @@ unsigned char handleWakeupRoutines(){
 
 void setupWakeUpRoutines(WakeUpSettings* w_u_settings){
     esp_sleep_enable_timer_wakeup(SELF_CHECK_RATE*1000000);
-    esp_sleep_enable_ext0_wakeup(PIN_STOVE_IN, 1);
+    esp_sleep_enable_ext0_wakeup(PIN_OVEN_DOOR, 1);
 }
 
 // this function is weak linked -> it gets overwritten easily like this: esp_default_wake... has to be called immidiately in the beginnning
