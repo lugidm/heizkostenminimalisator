@@ -20,42 +20,33 @@ Thermocouple::Thermocouple() : thermocouple(MAXCLK, MAXCS, MAXDO) {
   // thermocouple.setFaultChecks(MAX31855_FAULT_OPEN | MAX31855_FAULT_SHORT_VCC);  // short to GND fault is ignored    return true;
 }
 
-
-char Thermocouple::read_temperature(){
-    Serial.print("Internal Temp = ");
-   Serial.println(this->thermocouple.readInternal());
-
-
-   double c = thermocouple.readCelsius();
-
-   if (isnan(c)) {
-
-     Serial.println("Thermocouple fault(s) detected!");
-
-     uint8_t e = thermocouple.readError();
-
-     if (e & MAX31855_FAULT_OPEN) Serial.println("FAULT: Thermocouple is open - no connections.");
-
-     if (e & MAX31855_FAULT_SHORT_GND) Serial.println("FAULT: Thermocouple is short-circuited to GND.");
-
-     if (e & MAX31855_FAULT_SHORT_VCC) Serial.println("FAULT: Thermocouple is short-circuited to VCC.");
-
-   } else {
-
-     Serial.print("C = ");
-
-     Serial.println(c);
-
-   }
-
-   //Serial.print("F = ");
-
-   //Serial.println(thermocouple.readFahrenheit());
-
- 
-
-   delay(1000);
-   return c;
+//this function reads the temperature (multiple times and averages the values over the averaging time)
+double Thermocouple::read_temperature(uint16_t averaging_cycles){
+  uint16_t avg_counter = 0;
+  uint8_t retry_counter = 0;
+  double averaged_val = AVG_BEGIN_VAL;
+  while(avg_counter < averaging_cycles){
+    while (retry_counter < READ_RETRIES){
+      double c = thermocouple.readCelsius();
+      if (isnan(c)) { // This is only when readCelsius did not work
+        uint8_t e = thermocouple.readError();
+        if (e & MAX31855_FAULT_OPEN) c=FAULT_OPEN;
+        if (e & MAX31855_FAULT_SHORT_GND) c=FAULT_SHORT_GND;
+        if (e & MAX31855_FAULT_SHORT_VCC) c=FAULT_SHORT_VCC;
+        retry_counter++;
+        averaged_val = c;
+      } else {
+        retry_counter = 0;
+        if(averaged_val == AVG_BEGIN_VAL){
+          averaged_val = c;
+        }
+        else{
+          averaged_val = (averaged_val+c)/2;
+        }
+      }
+    }
+  avg_counter++;
+  }
 }
 
 bool Thermocouple::burning(){
