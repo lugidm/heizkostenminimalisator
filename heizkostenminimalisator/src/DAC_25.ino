@@ -21,6 +21,8 @@ char Carray[100];
 char x;
 int i = 0;
 
+//Test
+
 void setup() {
   Serial.begin(9600);
   delay(250); // wait for the OLED to power up
