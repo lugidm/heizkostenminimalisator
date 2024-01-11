@@ -32,7 +32,7 @@ void loop() {
   switch (state_variables.state)
   {
   case STATE_NORMAL_BOOT:
-    
+    delayedSleepEnable(30*60); // after 30 minutes, if nothing happens, we can go to sleep again:)
     break;
   
   default:

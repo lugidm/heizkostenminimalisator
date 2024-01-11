@@ -25,5 +25,7 @@ void IRAM_ATTR sleepTimerISR();
 
 void setupWakeUpRoutines(StateVariables *state_vars);
 void sleepysloopy();
+void delayedSleepEnable(int delay); // sets up a timer, which when triggered sets the ESP to deepsleep
+void delayedSleepDisable(); // disables the sleep timer
 
 #endif
