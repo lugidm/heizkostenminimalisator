@@ -21,7 +21,7 @@ Thermocouple::Thermocouple() : thermocouple(MAXCLK, MAXCS, MAXDO) {
 }
 
 //this function reads the temperature (multiple times and averages the values over the averaging time)
-double Thermocouple::read_temperature(uint16_t averaging_cycles){
+double Thermocouple::read_temperature(uint16_t averaging_cycles){//no sleep in this function because it gets called in a ISR!!!
   uint16_t avg_counter = 0;
   uint8_t retry_counter = 0;
   double averaged_val = AVG_BEGIN_VAL;
@@ -45,10 +45,19 @@ double Thermocouple::read_temperature(uint16_t averaging_cycles){
         }
       }
     }
+
   avg_counter++;
   }
 }
 
-bool Thermocouple::burning(){
-  return thermocouple.readCelsius()>40;
+bool Thermocouple::burning(double* temperature_measurements){
+  return temperature_measurements[0]>40;
+}
+
+boolean Thermocouple::temperature_rising_significantly(double* temperature_measurements){
+  return (temperature_measurements[0] != FAULT_OPEN && temperature_measurements[1] != FAULT_OPEN &&
+          temperature_measurements[0] != FAULT_SHORT_GND && temperature_measurements[1] != FAULT_SHORT_GND &&
+          temperature_measurements[0] != FAULT_SHORT_VCC && temperature_measurements[1] != FAULT_SHORT_VCC &&
+          temperature_measurements[0] > temperature_measurements[1] + SIGNIFICANT_TEMPERATURE_RISE && 
+          temperature_measurements[1] > 0);
 }

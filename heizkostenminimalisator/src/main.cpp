@@ -5,45 +5,40 @@
 #include "motor_control.h"
 
 
-RTC_DATA_ATTR WakeUpSettings wake_up_settings;
-RTC_DATA_ATTR double measured_temperature[5] = {0,0,0,0,0}; // In this array the last 5 measured temperatures are stored!
+RTC_DATA_ATTR StateVariables state_variables;
+RTC_DATA_ATTR double measured_temperature[NUM_TEMP_MEASUREMENTS] = {0,0,0,0,0}; // In this array the last 5 measured temperatures are stored!. [0] is the latest, [5] is the oldest
+Motor motor;
 
-//RTC_DATA_ATTR portMUX_TYPE settings_spinlock portMUX_INITIALIZER_UNLOCKED;
-
-
-//RTC_DATA_ATTR uint8_t state = STATE_NORMAL_BOOT; //this is the only thing that is stored during deepsleep!
 void setup() {
-  Serial.println("now in setup");
-  // put your setup code here, to run once:
-  if(wake_up_settings.temp_array == NULL or std::count(wake_up_settings.temp_array, std::end(wake_up_settings.temp_array), 0) != 0){
-    
+  if(state_variables.state = STATE_NORMAL_BOOT){
+    //this is the first bootup -> nothing is loaded yet 
+  }
+  else{
+    setupWakeUpRoutines(&state_variables);
   }
   Serial.begin(9600);
   delay(1000);
   setup_pins();
-  Motor motor = Motor();
-  setupWakeUpRoutines(&wake_up_settings, &temp_measurement_dev);
-  unsigned char current_state = handleWakeupRoutines();
-  if(current_state == INTR_READ_T){
-    Serial.println("STATE TEMP CHECK");
-    if (!temp_measurement_dev.burning()){
-      Serial.println("temperature sensor tells us that there is no fire");
-      sleepysloopy();
-    }
-    
-  }
-  else if(current_state == STATE_OVEN_DOOR){
-    Serial.println("OVEN DOOR OPENED -> longer check");
-  }  
-  else if(current_state == STATE_UNDEFINED){ // that is normal boot
-    Serial.println("UNDEFINED WAKE UP / NORMAL BOOT");
+  motor = Motor();
+  if(state_variables.state == STATE_NORMAL_BOOT){ //this could also be a power-outage!
+    Serial.println("UNDEFINED WAKE UP / NORMAL BOOT -> opening air inlet");
     motor.open_completely();
-    
+    //after that we will stay awake for at least 30 Minutes
   }
 }
 
 void loop() {
-    Serial.println("now in loop");
+  int on_counter = 0;
+  switch (state_variables.state)
+  {
+  case STATE_NORMAL_BOOT:
+    
+    break;
+  
+  default:
+    break;
+  }
+  Serial.println("now in loop");
   Serial.println("Entering DeepSleep in 1.2sec!");
   delay(1200);
   sleepysloopy();

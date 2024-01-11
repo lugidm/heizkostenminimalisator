@@ -7,11 +7,13 @@
 #define FAULT_SHORT_VCC -55.55
 #define FAULT_OPEN -55.66
 #define AVG_BEGIN_VAL -66.6
+#define SIGNIFICANT_TEMPERATURE_RISE 10 //degrees celsius or Kelvin
 class Thermocouple{
     private:
         Adafruit_MAX31855 thermocouple;
     public: 
         Thermocouple();
         double read_temperature(uint16_t averaging_time); // averaging time in milliseconds
-        bool burning();
+        bool burning(double *temperature_measurements);
+        bool temperature_rising_significantly(double *temperature_measurements);
     };
