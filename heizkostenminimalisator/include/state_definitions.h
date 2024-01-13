@@ -1,0 +1,8 @@
+#ifndef STATE_DEFINITIONS_H
+#define STATE_DEFINITIONS_H
+
+#define STATE_IDLEING 0U
+#define STATE_NORMAL_BOOT 1U
+#define STATE_BURNING 2U
+
+#endif

@@ -1,3 +1,5 @@
+#ifndef THERMOCOUPLE_H
+#define THERMOCOUPLE_H
 #include <Adafruit_MAX31855.h>
 #define MAXDO   19
 #define MAXCS   23
@@ -8,6 +10,7 @@
 #define FAULT_OPEN -55.66
 #define AVG_BEGIN_VAL -66.6
 #define SIGNIFICANT_TEMPERATURE_RISE 10 //degrees celsius or Kelvin
+
 class Thermocouple{
     private:
         Adafruit_MAX31855 thermocouple;
@@ -17,3 +20,7 @@ class Thermocouple{
         bool burning(double *temperature_measurements);
         bool temperature_rising_significantly(double *temperature_measurements);
     };
+
+
+
+#endif

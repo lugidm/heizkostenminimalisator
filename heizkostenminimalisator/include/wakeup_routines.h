@@ -1,7 +1,7 @@
 #ifndef WAKEUP_ROUTINES_H
 #define WAKEUP_ROUTINES_H
 #include <Arduino.h>
-#define STATE_NORMAL_BOOT 0U
+#include "state_definitions.h"
 #define INTR_READ_T 1U
 #define INTR_OVEN_DOOR 2U
 #define INTR_UNDEFINED 3U
@@ -11,6 +11,7 @@
 
 typedef struct StateVariables{ //this has to be defined as RTC_DATA_ATTR!!
     hw_timer_t * thermo_timer;
+    hw_timer_t * sleep_timer;
     //SemaphoreHandle_t timerSemaphore;
     //portMUX_TYPE state_mux;
     //uint32_t isr_counter;
@@ -25,7 +26,7 @@ void IRAM_ATTR sleepTimerISR();
 
 void setupWakeUpRoutines(StateVariables *state_vars);
 void sleepysloopy();
-void delayedSleepEnable(int delay); // sets up a timer, which when triggered sets the ESP to deepsleep
+void delayedSleepEnable(int32_t delay_sec); // sets up a timer, which when triggered sets the ESP to deepsleep
 void delayedSleepDisable(); // disables the sleep timer
 
 #endif

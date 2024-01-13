@@ -20,6 +20,7 @@ Thermocouple::Thermocouple() : thermocouple(MAXCLK, MAXCS, MAXDO) {
   // thermocouple.setFaultChecks(MAX31855_FAULT_OPEN | MAX31855_FAULT_SHORT_VCC);  // short to GND fault is ignored    return true;
 }
 
+
 //this function reads the temperature (multiple times and averages the values over the averaging time)
 double Thermocouple::read_temperature(uint16_t averaging_cycles){//no sleep in this function because it gets called in a ISR!!!
   uint16_t avg_counter = 0;
