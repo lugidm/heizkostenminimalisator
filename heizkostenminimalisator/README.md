@@ -41,7 +41,7 @@ Bein Interrupt auch
 SPI-output as 14 bit signed (integer)
 ### [Selfmade Voltage Stepper](https://www.falstad.com/circuit/circuitjs.html?ctz=CQAgjCAMB0l3BWEBmAHAJmgdgGzoRmACzICcpkORIC6NNkNApgLRhgBQA5iKnCOlSpe-ZMhxQoHAMYgcQ8DkZ9GYJZJjxIydOT36DE9tGRYEWUlVJYwqBGDqbInAE4jV6lQIWqtHIpCkNKR0aozywmHgUNASbGDQpAhEWJCoYKR8GYLIAsjQEJDccgHgISWM6OjUjEUAShXggo3sjpKlDhoxCMURKHRmdDoaHADuwXSWE+BENWPTU31TRW5LEn3DjAhKK3IKUWuSVfAcDYMgU17L7VtdMD08fYLCG+IjqwpT59dgfh+R6iePnAfgaCHKYFwNE6kIktRApSQ8PuHAA9jMSjdyAJarBnNt8EcMcgOEA)
 
-Is driven by PIN_MOTOR_OUT (analog) between the voltages WRITE_AIR_INLET_CLOSE_VOLTAGE to WRITE_AIR_INLET_OPEN_VOLTAGE
+Is driven by PIN_MOTOR_OUT (analog) between the voltages pwm_closed to pwm_open
 
 
 ## FLASH image to ESP32:

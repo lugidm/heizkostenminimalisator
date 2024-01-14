@@ -62,3 +62,11 @@ boolean Thermocouple::temperature_rising_significantly(double* temperature_measu
           temperature_measurements[0] > temperature_measurements[1] + SIGNIFICANT_TEMPERATURE_RISE && 
           temperature_measurements[1] > 0);
 }
+
+void Thermocouple::add_temperature_measurement(StateVariables* state_variables){
+    double current_temp = this->read_temperature(1000); // this also stores errors! This has to be checked later in the procedure
+    for(uint8_t i = NUM_TEMP_MEASUREMENTS; i>0; i--){
+        state_variables->temperature_measurements[i] = state_variables->temperature_measurements[i-1]; // shift everything to the right
+    }
+    state_variables->temperature_measurements[0] = current_temp;
+}

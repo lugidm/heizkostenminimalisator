@@ -3,44 +3,50 @@
 #include "pin_setup.h"
 #include "thermocouple.h"
 #include "motor_control.h"
-
+//#define DEBUG  //uncomment this line when you want serial output!
 
 RTC_DATA_ATTR StateVariables state_variables;
 RTC_DATA_ATTR double measured_temperature[NUM_TEMP_MEASUREMENTS] = {0,0,0,0,0}; // In this array the last 5 measured temperatures are stored!. [0] is the latest, [5] is the oldest
 Motor motor;
+unsigned int door_opened_time;
+
 
 void setup() {
   if(state_variables.state = STATE_NORMAL_BOOT){
     //this is the first bootup -> nothing is loaded yet 
-  }
-  else{
     setupWakeUpRoutines(&state_variables);
   }
+  #ifdef DEBUG
   Serial.begin(9600);
   delay(1000);
+  #endif
   setup_pins();
   motor = Motor();
-  if(state_variables.state == STATE_NORMAL_BOOT){ //this could also be a power-outage!
-    Serial.println("UNDEFINED WAKE UP / NORMAL BOOT -> opening air inlet");
-    motor.open_completely();
-    //after that we will stay awake for at least 30 Minutes
-  }
 }
 
 void loop() {
+  
   int on_counter = 0;
   switch (state_variables.state)
   {
-  case STATE_NORMAL_BOOT:
+  case STATE_DOOR_OPENED:
+    motor.open_completely();
     delayedSleepEnable(30*60); // after 30 minutes, if nothing happens, we can go to sleep again:)
     break;
-  
+  case STATE_NORMAL_BOOT:
+    state_variables.state = STATE_DOOR_OPENED;
+    break;
+  case STATE_IDLE:
+    break; // do nothing but to check constantly
+    
   default:
     break;
   }
+  #ifdef DEBUG
   Serial.println("now in loop");
   Serial.println("Entering DeepSleep in 1.2sec!");
-  delay(1200);
+  #endif
+  delay(1000);
   sleepysloopy();
 
   // put your main code here, to run repeatedly:

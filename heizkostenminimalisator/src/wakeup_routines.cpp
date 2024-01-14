@@ -6,9 +6,6 @@
 #include "pin_setup.h"
 #include "thermocouple.h"
 
-
-RTC_DATA_ATTR struct StateVariables* state_variables;
-
 //this function defines the wakeups but also the interrupts (every )
 void setupWakeUpRoutines(StateVariables* state_vars){
     state_variables = state_vars;
@@ -52,14 +49,33 @@ void delayedSleepDisable(){
 }
 
 void IRAM_ATTR onTimer(){ // This is the function that gets called every TEMP_CHECK_PERIOD seconds it is not nice to put everything in the ISR but since we interrupt every 5 Minutes, this should do:)
-    Thermocouple thmc = Thermocouple();
-    double current_temp = thmc.read_temperature(1000); // this also stores errors!! This has to be checked later in the procedure
-    for(uint8_t i = NUM_TEMP_MEASUREMENTS; i>0; i--){
-        state_variables->temperature_measurements[i] = state_variables->temperature_measurements[i-1]; // shift everything to the right
-    }
-    state_variables->temperature_measurements[0] = current_temp;
+    append_intermediate_task(TASKS_READ_T);
 }
 
 void IRAM_ATTR sleepTimerISR(){  // This wrapper function gets called by the interrupt. Its only purpose is to let put the ESP32 into sleep mode add here any necessary pre-sleep function-calls
     esp_deep_sleep_start();
+}
+
+void append_intermediate_task(uint8_t intermediate_task){
+    for (uint8_t i = 0; i<sizeof(state_variables->intermediate_tasks);i++){
+        if(state_variables->intermediate_tasks[i] == -1){
+            state_variables->intermediate_tasks[i] == intermediate_task;
+        }
+    }
+}
+
+void delete_intermediate_task(uint8_t id){
+    state_variables->intermediate_tasks[id] = -1;
+    for (uint8_t i = id; i<sizeof(state_variables->intermediate_tasks)-1;i++){
+        state_variables->intermediate_tasks[i] = state_variables->intermediate_tasks[i+1];
+    }
+}
+
+bool intermediate_task_available(uint8_t intermediate_task){
+    for (uint8_t i = 0; i<sizeof(state_variables->intermediate_tasks);i++){
+        if(state_variables->intermediate_tasks[i] != -1){
+            return
+        }
+        state_variables[i] = state_variables[i+1];
+    }
 }

@@ -3,20 +3,27 @@
 #include <Arduino.h>
 
 
+#define PIN_MOTOR_OUT 25
+
+typedef struct MotorPosition{
+    float cur_pwm;
+    float cur_closure; // percentage of cur_pwm : 0=close 100=open(linear function, see ../documentation/measured_voltage_values_pwm.ods) 
+} MotorPosition;
+
+
 class Motor{
     private:
-        char v_zero_out = 110;
-        char v_max_out = 235;
-        float v_closed_in = 3.233;
-        float v_open_in = 0.66666;
-        float x = 10;
-        float closure;
-        bool apply(float position);
+        uint8_t pwm_closed = 110;
+        uint8_t pwm_opened = 235;
+        //float v_closed_in = 3.233;
+        //float v_open_in = 0.66666;
+        MotorPosition cur_position;
     public:
         Motor();
-        bool open_completely();
-        bool adjust(float percentage);
-        bool close_completely();
+        void open_completely();
+        void adjust(float percentage); 
+        void close_completely();
+        MotorPosition get_cur_position();
     };
 
 

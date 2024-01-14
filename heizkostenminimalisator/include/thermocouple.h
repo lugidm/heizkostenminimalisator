@@ -1,6 +1,7 @@
 #ifndef THERMOCOUPLE_H
 #define THERMOCOUPLE_H
 #include <Adafruit_MAX31855.h>
+#include "wakeup_routines.h"
 #define MAXDO   19
 #define MAXCS   23
 #define MAXCLK  5
@@ -19,6 +20,7 @@ class Thermocouple{
         double read_temperature(uint16_t averaging_time); // averaging time in milliseconds
         bool burning(double *temperature_measurements);
         bool temperature_rising_significantly(double *temperature_measurements);
+        void add_temperature_measurement(StateVariables* state_variables);
     };
 
 

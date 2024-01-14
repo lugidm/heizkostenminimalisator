@@ -64,7 +64,7 @@ void OutputDisplay::writeState(uint8_t cur_state){
     {
     case STATE_BURNING:
         this->display.println("BURNING"); break;
-    case STATE_IDLEING:
+    case STATE_IDLE:
         this->display.println("IDLEING"); break;
     case STATE_NORMAL_BOOT:
         this->display.println("NORMAL BOOT"); break;
