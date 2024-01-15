@@ -21,6 +21,7 @@ class Thermocouple{
         bool burning(double *temperature_measurements);
         bool temperature_rising_significantly(double *temperature_measurements);
         void add_temperature_measurement(StateVariables* state_variables);
+        double cur_highest_temperature(double *temperature_measurements);
     };
 
 

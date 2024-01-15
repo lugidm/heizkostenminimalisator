@@ -70,3 +70,12 @@ void Thermocouple::add_temperature_measurement(StateVariables* state_variables){
     }
     state_variables->temperature_measurements[0] = current_temp;
 }
+
+double Thermocouple::cur_highest_temperature(double* temperature_measurements){
+  double return_val = FAULT_OPEN;
+  for(int i = 0; i < NUM_TEMP_MEASUREMENTS; i++){
+    if(return_val< temperature_measurements[i]){
+      return_val = temperature_measurements[i];
+    }
+  }
+}

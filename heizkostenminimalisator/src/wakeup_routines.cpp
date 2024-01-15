@@ -49,7 +49,7 @@ void delayedSleepDisable(){
 }
 
 void IRAM_ATTR onTimer(){ // This is the function that gets called every TEMP_CHECK_PERIOD seconds it is not nice to put everything in the ISR but since we interrupt every 5 Minutes, this should do:)
-    state_variables->measure_temperature = true;
+    state_variables->task_measure_temperature = true;
     //append_intermediate_task(TASKS_READ_T);
 }
 

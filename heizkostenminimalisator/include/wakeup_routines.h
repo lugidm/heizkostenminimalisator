@@ -20,7 +20,7 @@ typedef struct StateVariables{ //this has to be declared as RTC_DATA_ATTR!!
     //portMUX_TYPE state_mux;
     //uint32_t isr_counter;
     unsigned char state = STATE_NORMAL_BOOT; // state_variable
-    bool measure_temperature = true; // this indicates a task (read temp), has to be done, regardless of the cur state
+    bool task_measure_temperature = true; // this indicates a task (read temp), has to be done, regardless of the cur state
     bool setup;
     double temperature_measurements[NUM_TEMP_MEASUREMENTS] = {0,0,0,0,0}; // This array gets updated every five minutes with the measured temperature
 } StateVariables;
