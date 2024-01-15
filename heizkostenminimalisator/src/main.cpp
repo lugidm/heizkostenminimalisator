@@ -7,6 +7,7 @@
 
 RTC_DATA_ATTR StateVariables state_variables;
 RTC_DATA_ATTR double measured_temperature[NUM_TEMP_MEASUREMENTS] = {0,0,0,0,0}; // In this array the last 5 measured temperatures are stored!. [0] is the latest, [5] is the oldest
+Thermocouple thermocouple;
 Motor motor;
 unsigned int door_opened_time;
 
@@ -22,6 +23,7 @@ void setup() {
   #endif
   setup_pins();
   motor = Motor();
+  thermocouple = Thermocouple()
 }
 
 void loop() {
@@ -38,9 +40,20 @@ void loop() {
     break;
   case STATE_IDLE:
     break; // do nothing but to check constantly
-    
+  case STATE_READ_T:
+    if(state_variables.state == STATE_READ_T){
+      esp_deep_sleep_start();
+
+    }
+    break;
   default:
     break;
+  }
+
+  if(state_variables.measure_temperature){
+    state_variables.measure_temperature = false;
+    thermocouple.add_temperature_measurement(&state_variables);
+    
   }
   #ifdef DEBUG
   Serial.println("now in loop");

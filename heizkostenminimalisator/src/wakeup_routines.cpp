@@ -25,7 +25,7 @@ void RTC_IRAM_ATTR esp_wake_deep_sleep(void){
     wakeup_reason = esp_sleep_get_wakeup_cause();
     switch(wakeup_reason){
     case ESP_SLEEP_WAKEUP_EXT0 : state_variables->state = INTR_OVEN_DOOR; break;
-    case ESP_SLEEP_WAKEUP_TIMER : state_variables->state = INTR_READ_T; &onTimer; break; // only when the timer wakes the ESP, we go into a ISR, otherwise the normal loop is started
+    case ESP_SLEEP_WAKEUP_TIMER : state_variables->state = STATE_READ_T; onTimer(); break; // only when the timer wakes the ESP, we go into a ISR, otherwise the normal loop is started
     case ESP_SLEEP_WAKEUP_UNDEFINED : state_variables->state = INTR_UNDEFINED; break;
     default : state_variables->state = INTR_UNDEFINED; break;
     }
@@ -49,33 +49,43 @@ void delayedSleepDisable(){
 }
 
 void IRAM_ATTR onTimer(){ // This is the function that gets called every TEMP_CHECK_PERIOD seconds it is not nice to put everything in the ISR but since we interrupt every 5 Minutes, this should do:)
-    append_intermediate_task(TASKS_READ_T);
+    state_variables->measure_temperature = true;
+    //append_intermediate_task(TASKS_READ_T);
 }
 
 void IRAM_ATTR sleepTimerISR(){  // This wrapper function gets called by the interrupt. Its only purpose is to let put the ESP32 into sleep mode add here any necessary pre-sleep function-calls
     esp_deep_sleep_start();
 }
 
-void append_intermediate_task(uint8_t intermediate_task){
-    for (uint8_t i = 0; i<sizeof(state_variables->intermediate_tasks);i++){
-        if(state_variables->intermediate_tasks[i] == -1){
+/*
+void append_intermediate_task(uint8_t intermediate_task)
+{
+    for (uint8_t i = 0; i < sizeof(state_variables->intermediate_tasks); i++)
+    {
+        if (state_variables->intermediate_tasks[i] == -1)
+        {
             state_variables->intermediate_tasks[i] == intermediate_task;
         }
     }
 }
 
-void delete_intermediate_task(uint8_t id){
+void delete_intermediate_task(uint8_t id)
+{
     state_variables->intermediate_tasks[id] = -1;
-    for (uint8_t i = id; i<sizeof(state_variables->intermediate_tasks)-1;i++){
-        state_variables->intermediate_tasks[i] = state_variables->intermediate_tasks[i+1];
+    for (uint8_t i = id; i < sizeof(state_variables->intermediate_tasks) - 1; i++)
+    {
+        state_variables->intermediate_tasks[i] = state_variables->intermediate_tasks[i + 1];
     }
 }
 
-bool intermediate_task_available(uint8_t intermediate_task){
-    for (uint8_t i = 0; i<sizeof(state_variables->intermediate_tasks);i++){
-        if(state_variables->intermediate_tasks[i] != -1){
+bool intermediate_task_available(uint8_t intermediate_task)
+{
+    for (uint8_t i = 0; i < sizeof(state_variables->intermediate_tasks); i++)
+    {
+        if (state_variables->intermediate_tasks[i] != -1)
+        {
             return
         }
-        state_variables[i] = state_variables[i+1];
+        state_variables[i] = state_variables[i + 1];
     }
-}
+}*/
