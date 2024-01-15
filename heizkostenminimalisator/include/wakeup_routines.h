@@ -10,9 +10,6 @@
 #define BTN_STOP_ALARM    0
 
 
-
-
-
 typedef struct StateVariables{ //this has to be declared as RTC_DATA_ATTR!!
     hw_timer_t * thermo_timer;
     hw_timer_t * sleep_timer;
@@ -20,20 +17,24 @@ typedef struct StateVariables{ //this has to be declared as RTC_DATA_ATTR!!
     //portMUX_TYPE state_mux;
     //uint32_t isr_counter;
     unsigned char state = STATE_NORMAL_BOOT; // state_variable
-    bool task_measure_temperature = true; // this indicates a task (read temp), has to be done, regardless of the cur state
+    bool task_measure_temperature; // this indicates a task (read temp), has to be done, regardless of the cur state
     bool setup;
-    double temperature_measurements[NUM_TEMP_MEASUREMENTS] = {0,0,0,0,0}; // This array gets updated every five minutes with the measured temperature
+    double highest_temperature = -1; // this variable gets reset, every time the door opens or the ESP starts in NORMAL_BOOT
+    double temperature_measurements[NUM_TEMP_MEASUREMENTS]; // This array gets updated every five minutes with the measured temperature
+    double temperature_closure_slope = 0; // this variable gets reset, every time the door opens or the ESP starts in NORMAL_BOOT
+    double temperature_closure_offset = 0; // this variable gets reset, every time the door opens or the ESP starts in NORMAL_BOOT
 } StateVariables;
 
-extern RTC_DATA_ATTR struct StateVariables* state_variables;
+extern RTC_DATA_ATTR StateVariables state_variables;
 
 
 void IRAM_ATTR onTimer();
 void IRAM_ATTR sleepTimerISR();
 
-void setupWakeUpRoutines(StateVariables *state_vars);
+void setupWakeUpRoutines();
 void sleepysloopy();
 void delayedSleepEnable(int32_t delay_sec); // sets up a timer, which when triggered sets the ESP to deepsleep
 void delayedSleepDisable(); // disables the sleep timer
+bool delayedSleepIsSet(); //returns true, if a timer has already been set
 //void append_intermediate_task(uint8_t intermediate_task);
 #endif

@@ -6,16 +6,13 @@
 //#define DEBUG  //uncomment this line when you want serial output!
 
 RTC_DATA_ATTR StateVariables state_variables;
-RTC_DATA_ATTR double measured_temperature[NUM_TEMP_MEASUREMENTS] = {0,0,0,0,0}; // In this array the last 5 measured temperatures are stored!. [0] is the latest, [5] is the oldest
 Thermocouple thermocouple;
 Motor motor;
 unsigned int door_opened_time;
-double highest_temperature = -1;
-
 void setup() {
   if(state_variables.state = STATE_NORMAL_BOOT){
     //this is the first bootup -> nothing is loaded yet 
-    setupWakeUpRoutines(&state_variables);
+    setupWakeUpRoutines();
   }
   #ifdef DEBUG
   Serial.begin(9600);
@@ -36,7 +33,8 @@ void loop() {
   {
   case STATE_DOOR_OPENED:
     motor.open_completely();
-    delayedSleepEnable(30 * 60); // after 30 minutes, if nothing happens, we can go to sleep again:)
+
+    //delayedSleepEnable(30 * 60); // after 30 minutes, if nothing happens, we can go to sleep again:)
     if (thermocouple.temperature_rising_significantly(state_variables.temperature_measurements))
     {
       state_variables.state = STATE_BURNING;
@@ -47,14 +45,13 @@ void loop() {
     state_variables.state = STATE_DOOR_OPENED;
     break;
   case STATE_IDLE:
-    delayedSleepEnable(30 * 60);
+    //delayedSleepEnable(30 * 60);
     break; // do nothing but to check constantly
   case STATE_READ_T:
     if (state_variables.state == STATE_READ_T && !state_variables.task_measure_temperature)
-    { // the second time we pass through the loop we check for a temperature-rise
+    {
       if (thermocouple.temperature_rising_significantly(state_variables.temperature_measurements))
       {
-        motor.open_completely();
         state_variables.state = STATE_BURNING;
       }
       else
@@ -63,11 +60,25 @@ void loop() {
       }
     }
   case STATE_BURNING:
-    if(thermocouple.cur_highest_temperature(state_variables.temperature_measurements) > highest_temperature){
-      highest_temperature = thermocouple.cur_highest_temperature(state_variables.temperature_measurements);
+    motor.adjust(MOTOR_OPENING_BURNING);
+    if(thermocouple.cur_highest_temperature(state_variables.temperature_measurements) > state_variables.highest_temperature){
+      state_variables.highest_temperature = thermocouple.cur_highest_temperature(state_variables.temperature_measurements);
     }
-    esp_deep_sleep_start(); // we have to wake up, the next time, the temperature gets measured!
+    if(thermocouple.temperature_sinking_significantly(state_variables.temperature_measurements)){
+      state_variables.state = STATE_BURN_OFF;
+    }
+    else{
+      esp_deep_sleep_start();
+    }
     break;
+  case STATE_BURN_OFF:
+    if(state_variables.temperature_closure_slope == 0){ // the calculation of the rate has not been done yet
+      state_variables.temperature_closure_slope = (MOTOR_OPENING_COOLDOWN-MOTOR_OPENING_BURNING)/(state_variables.highest_temperature - TEMP_COOL_DOWN);
+      state_variables.temperature_closure_offset = MOTOR_OPENING_BURNING - state_variables.temperature_closure_slope * state_variables.highest_temperature;
+    }
+    if(state_variables.temperature_measurements[0] > 0) // NO ERRORS
+    motor.adjust(state_variables.temperature_measurements[0]*state_variables.temperature_closure_slope + state_variables.temperature_closure_offset);
+    esp_deep_sleep_start();
   default:
     break;
   }

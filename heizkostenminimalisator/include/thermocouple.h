@@ -10,7 +10,13 @@
 #define FAULT_SHORT_VCC -55.55
 #define FAULT_OPEN -55.66
 #define AVG_BEGIN_VAL -66.6
-#define SIGNIFICANT_TEMPERATURE_RISE 10 //degrees celsius or Kelvin
+
+///////////////////////////// TODO: change by user //////////////////////
+#define DTEMP_SIGNIFICANT 10.f //degrees celsius or Kelvin
+#define TEMP_COOL_DOWN 100.f //degrees celsius
+
+
+/////////////////////////////////////////////
 
 class Thermocouple{
     private:
@@ -20,8 +26,10 @@ class Thermocouple{
         double read_temperature(uint16_t averaging_time); // averaging time in milliseconds
         bool burning(double *temperature_measurements);
         bool temperature_rising_significantly(double *temperature_measurements);
+        bool temperature_sinking_significantly(double *temperature_measurements);
         void add_temperature_measurement(StateVariables* state_variables);
         double cur_highest_temperature(double *temperature_measurements);
+        
     };
 
 
