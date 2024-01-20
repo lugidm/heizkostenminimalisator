@@ -3,27 +3,28 @@ Software to control the inlet air of a stove with temperature sensor and communi
 
 
 ## Basic Procedure
-1. Startup
-	* initialize all variables and create a interrupt for the stove door (first check if it is already open -> 2.)
-	* __Possible extension: Check for 5 Minutes on a HTML-Server to check whether someone wants to change some parameters__
-	* __Possible extension: Communicate over MQTT if activated__
-2. Interrupt happened (stove door opened)
-	* Check if we are in fire-state (logging temperature etc.) -> if not continue normally, otherwise, somebody might have re-lit the fire -> ???
-	* Open air inlet completely -> 10V on PIN_MOTOR_OUT until reference signal on MOTOR_INPUT_PIN matches READ_AIR_INLET_OPEN_VOLTAGE
-	* Start reading from PIN_TEMP_SENSOR if it does not change in 30 minutes close air inlet and go back to deep sleep (wait for interrupt)
-	* If temp-signal changes more then **5°** start logging the temperature in a [120x1] int-Array to conduct temperature curve analysis
-	* Every 5 minutes, conduct temp-curve analysis, if the curve is truely falling, divide current temperature in 8 closing segments (e.g. 160°-200° = completely open, 120°-160° = 87.7%open etc.)
-	* When temperature becomes steady again (air inlet should `hopefully` be at that point around 12% open) close it completely
-	* Keep logging and doing curve analysis for another 30 minutes to be sure, the fire is not relit again 
+* The temperature is measured every TEMP_CHECK_PERIOD, triggered by an interrupt (and also wake-up routine)
+
+* The oven door-switch has to be connected to an RTC GPIO-PIN https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/gpio.html (defined in pin_setup.h)
+
+* As for now, the state, temperature etc. will be displayed on a external display https://eckstein-shop.de/WaveShare-096inch-OLED-Display-Module-White-on-Black-128x64-SPI-I2C.
+
+* The setup of the display is defined in `display.h` (see `display_setup.dxf`)
+
+* ![display_setup](/home/lugi/Documents/Programme/heizkostenminimalisator/heizkostenminimalisator/documentation/display_setup.png)
+
+* **Possible extension: Check for 5 Minutes on a HTML-Server to check whether someone wants to change some parameters**
+
+* **Possible extension: Communicate over MQTT if activated**
+
+  
 
 ## STATE CHART
 ![plot](./documentation/State_chart.png?raw=true "State Chart")
 
 ## CONSTANTS
-- PIN_MOTOR_OUT `integer`
-- WRITE_AIR_INLET_CLOSE_VOLTAGE `float`
-- WRITE_AIR_INLET_OPEN_VOLTAGE `float`
-- READ_AIR_INLET_OPEN_VOLTAGE `float`
+- defined in various files (`pin_setup.h,` `main.cpp`, `motor_control.h`, `wakeup_routines.h`, `thermocouple.h`)
+- **The ones marked with /// TODO: .... have to be changed by the user**
 
 ## COOL_DOWN
 
