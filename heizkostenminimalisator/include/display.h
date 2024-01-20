@@ -22,8 +22,8 @@ class OutputDisplay{
     public:
         OutputDisplay();
         void writeTemp(double* temperature_measurements);
-        void writeMotor(double cur_voltage);
-        void writeState(uint8_t cur_state);
+        void writeMotor(double cur_percentage);
+        void writeState(uint8_t cur_state, uint32_t time);
 };
 
 

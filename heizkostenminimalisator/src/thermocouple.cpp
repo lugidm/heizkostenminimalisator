@@ -49,6 +49,7 @@ double Thermocouple::read_temperature(uint16_t averaging_cycles){//no sleep in t
 
   avg_counter++;
   }
+  return averaged_val;
 }
 
 bool Thermocouple::burning(double* temperature_measurements){
@@ -68,7 +69,7 @@ bool Thermocouple::temperature_rising_significantly(double* temperature_measurem
   return rising;
 }
 
-bool temperature_sinking_significantly(double *temperature_measurements){
+bool Thermocouple::temperature_sinking_significantly(double *temperature_measurements){
   bool sinking = true;
   sinking = (temperature_measurements[0] != FAULT_OPEN && temperature_measurements[1] != FAULT_OPEN &&
           temperature_measurements[0] != FAULT_SHORT_GND && temperature_measurements[1] != FAULT_SHORT_GND &&
@@ -100,4 +101,5 @@ double Thermocouple::cur_highest_temperature(double* temperature_measurements){
       return_val = temperature_measurements[i];
     }
   }
+  return return_val;
 }

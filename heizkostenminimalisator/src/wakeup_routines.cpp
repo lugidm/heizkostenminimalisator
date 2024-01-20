@@ -36,7 +36,7 @@ void RTC_IRAM_ATTR esp_wake_deep_sleep(void){
         state_variables.temperature_closure_offset = 0;
         break;
     case ESP_SLEEP_WAKEUP_TIMER:
-        if (state_variables.state == STATE_NORMAL_BOOT)
+        if (state_variables.state == STATE_NORMAL_BOOT || state_variables.state == STATE_COOL_DOWN)  // when the esp wakes up in STATE_COOL_DOWN, the procedure should be finished. therefore, a "reset" is appropriate
         {
             state_variables.state = STATE_READ_T;
         }

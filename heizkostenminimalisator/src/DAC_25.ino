@@ -4,6 +4,7 @@
  * 
  * ESP32 DAC - Digital To Analog Conversion Example
  */
+#ifdef INCLUDE
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -67,3 +68,5 @@ void loop(){
   }
   delay(100);
 }
+
+#endif

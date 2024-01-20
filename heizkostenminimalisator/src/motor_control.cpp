@@ -7,15 +7,15 @@ Motor::Motor() {
 }
 
 void Motor::open_completely() {
-    this->cur_position.cur_closure = 100.f;
+    this->cur_position.cur_closure = MOTOR_OPENING_BURNING;
     this->cur_position.cur_pwm = this->pwm_opened;
     dacWrite(PIN_MOTOR_OUT, this->pwm_opened);
 }
 
 void Motor::close_completely(){
-    this->cur_position.cur_closure = 100.f;
-    this->cur_position.cur_pwm = this->pwm_opened;
-    dacWrite(PIN_MOTOR_OUT, this->pwm_closed);
+    this->cur_position.cur_closure = 0.f;
+    this->cur_position.cur_pwm = this->pwm_closed;
+    dacWrite(PIN_MOTOR_OUT, this->cur_position.cur_pwm);
 }
 
 void Motor::adjust(float percentage){

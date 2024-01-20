@@ -37,6 +37,7 @@ void OutputDisplay::displaySetupTemperature(){
     }
     this->display.setCursor(1+POS_TEMPERATURE+1);
     this->display.println("TEMP.:");
+    
 }
 
 void OutputDisplay::displaySetupMotor(){
@@ -54,22 +55,35 @@ void OutputDisplay::writeTemp(double* temperature_measurements){  // writes the 
     this->display.display();
 }
 
-void OutputDisplay::writeMotor(double cur_voltage){
-
+void OutputDisplay::writeMotor(double cur_percentage){
+    this->display.setCursor(HEADERS_WIDTH+8+POS_MOTOR);
+    this->display.println(cur_percentage, 0);
+    this->display.flush();
+    this->display.display();
 }
 
-void OutputDisplay::writeState(uint8_t cur_state){
+void OutputDisplay::writeState(uint8_t cur_state, uint32_t time){
+    this->display.setCursor(HEADERS_WIDTH+8+POS_STATE);
+    this->display.print("since ");
+    this->display.print(time);
+    this->display.println(" sec");
     this->display.setCursor(HEADERS_WIDTH+POS_STATE+10);
     switch (cur_state)
     {
     case STATE_BURNING:
-        this->display.println("BURNING"); break;
-    case STATE_IDLE:
-        this->display.println("IDLEING"); break;
+        this->display.println("BURNING     "); break;
     case STATE_NORMAL_BOOT:
-        this->display.println("NORMAL BOOT"); break;
+        this->display.println("NORMAL BOOT "); break;
+    case STATE_BURN_OFF:
+        this->display.println("BURN OFF    "); break;
+    case STATE_DOOR_OPENED:
+        this->display.println("DOOR OPENED "); break;
+    case STATE_READ_T:
+        this->display.println("READ TEMP   "); break;
+    case STATE_COOL_DOWN:
+        this->display.println("COOL DOWN   "); break;
     default:
-        this->display.println("UNDEFINED"); break;
+        this->display.println("UNDEFINED   "); break;
         break;
     }
     this->display.flush();

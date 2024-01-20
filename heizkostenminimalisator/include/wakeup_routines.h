@@ -5,10 +5,12 @@
 #define INTR_READ_T 1U
 #define INTR_OVEN_DOOR 2U
 #define INTR_UNDEFINED 3U
-#define TEMP_CHECK_PERIOD 30  // in seconds -> every 60 Minutes the temperature should be checked if higher than X degrees. This is just for extra safety.
 #define NUM_TEMP_MEASUREMENTS 5
 #define BTN_STOP_ALARM    0
 
+//// TODO: Adapt:
+#define TEMP_CHECK_PERIOD 5*60  // in seconds -> every 5 Minutes the temperature should be checked if higher than X degrees. This is just for extra safety.
+//////////
 
 typedef struct StateVariables{ //this has to be declared as RTC_DATA_ATTR!!
     hw_timer_t * thermo_timer;
@@ -18,7 +20,7 @@ typedef struct StateVariables{ //this has to be declared as RTC_DATA_ATTR!!
     //uint32_t isr_counter;
     unsigned char state = STATE_NORMAL_BOOT; // state_variable
     bool task_measure_temperature; // this indicates a task (read temp), has to be done, regardless of the cur state
-    bool setup;
+    //bool setup;
     double highest_temperature = -1; // this variable gets reset, every time the door opens or the ESP starts in NORMAL_BOOT
     double temperature_measurements[NUM_TEMP_MEASUREMENTS]; // This array gets updated every five minutes with the measured temperature
     double temperature_closure_slope = 0; // this variable gets reset, every time the door opens or the ESP starts in NORMAL_BOOT
