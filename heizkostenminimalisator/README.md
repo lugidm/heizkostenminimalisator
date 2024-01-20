@@ -11,7 +11,7 @@ Software to control the inlet air of a stove with temperature sensor and communi
 
 * The setup of the display is defined in `display.h` (see `display_setup.dxf`)
 
-* ![display_setup](/home/lugi/Documents/Programme/heizkostenminimalisator/heizkostenminimalisator/documentation/display_setup.png)
+* ![display_setup](./documentation/display_setup.png)
 
 * **Possible extension: Check for 5 Minutes on a HTML-Server to check whether someone wants to change some parameters**
 
