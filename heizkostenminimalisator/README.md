@@ -1,11 +1,15 @@
 # heizkostenminimalisator
-Software to control the inlet air of a stove with temperature sensor and communication over MQTT
+Software to control the inlet air of a stove with temperature sensor and (in a later version communication over MQTT)
+
+Programmed in VSCode with PlatformIO.
 
 
 ## Basic Procedure
 * The temperature is measured every TEMP_CHECK_PERIOD, triggered by an interrupt (and also wake-up routine)
 
 * The oven door-switch has to be connected to an RTC GPIO-PIN https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/gpio.html (defined in pin_setup.h)
+
+  * When the door is **open, the pin measures inf. resistance => pin is internally pulled up. Therefore, the interrupt is triggered when input-pin is 1 -> check this in `ẁakeup_routines.cpp` line 17**
 
 * As for now, the state, temperature etc. will be displayed on a external display https://eckstein-shop.de/WaveShare-096inch-OLED-Display-Module-White-on-Black-128x64-SPI-I2C.
 
@@ -38,16 +42,6 @@ M_{current} = T_{current} * slope + offset
 $$
 
 
-## Annahmen (von Lugi)
-30minuten zuluft auf sobald ofentür geöffnet wird  
-ca. 2h abbranddauer -> int-array größe ~ 120  
-
-motorstellung: pin 25  
-Pin 16: Kontakt fürs ofentierl inf. ohm = OFFEN  
-
-Beim Einschalten Ofentür auf!! (wegen Stromausfall)
-
-Bein Interrupt auch
 
 ## Project Components
 ### [Thermocouple Digital Converter](https://cdn-shop.adafruit.com/datasheets/MAX31855.pdf)
