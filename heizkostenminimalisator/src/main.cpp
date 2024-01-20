@@ -90,6 +90,14 @@ void loop() {
     break;
 
   case STATE_BURN_OFF:
+    if(thermocouple.temperature_rising_significantly(state_variables.temperature_measurements)){
+      state_time_counter = 0;
+      state_variables.highest_temperature = 0;
+      state_variables.temperature_closure_slope = 0;
+      state_variables.temperature_closure_offset = 0;
+      state_variables.state = STATE_BURNING;
+      break;
+    }
     if(state_variables.temperature_measurements[0]>0 && state_variables.temperature_measurements[0]<TEMP_COOL_DOWN){
       state_time_counter = 0;
       state_variables.state = STATE_COOL_DOWN;
@@ -107,7 +115,11 @@ void loop() {
     if(thermocouple.temperature_rising_significantly(state_variables.temperature_measurements)){
       delayedSleepDisable();
       state_time_counter = 0;
+      state_variables.highest_temperature = 0;
+      state_variables.temperature_closure_slope = 0;
+      state_variables.temperature_closure_offset = 0;
       state_variables.state = STATE_BURNING;
+      break;
     }
     else if(!delayedSleepIsSet()){
       delayedSleepEnable(COOL_DOWN_PERIOD*60);
@@ -131,7 +143,6 @@ void loop() {
   #endif
   state_time_counter++;
   delay(1000);
-  sleepysloopy();
-
-  // put your main code here, to run repeatedly:
   }
+
+  

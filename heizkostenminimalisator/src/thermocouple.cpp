@@ -65,7 +65,7 @@ bool Thermocouple::temperature_rising_significantly(double* temperature_measurem
                         temperature_measurements[i] != FAULT_SHORT_GND && temperature_measurements[i+1] != FAULT_SHORT_GND &&
                         temperature_measurements[i] != FAULT_SHORT_VCC && temperature_measurements[i+1] != FAULT_SHORT_VCC);
   }
-  rising = rising && (temperature_measurements[0] > temperature_measurements[int((15*60)/TEMP_CHECK_PERIOD + 0.5)] + DTEMP_SIGNIFICANT); // the last check is for significancy
+  rising = rising && (temperature_measurements[0] > temperature_measurements[int((15*60)/TEMP_CHECK_PERIOD + 0.5)] + DTEMP_SIGNIFICANT_RISING); // the last check is for significancy
   return rising;
 }
 
@@ -81,7 +81,7 @@ bool Thermocouple::temperature_sinking_significantly(double *temperature_measure
                         temperature_measurements[i] != FAULT_SHORT_GND && temperature_measurements[i+1] != FAULT_SHORT_GND &&
                         temperature_measurements[i] != FAULT_SHORT_VCC && temperature_measurements[i+1] != FAULT_SHORT_VCC);
   }
-  sinking = sinking && (temperature_measurements[0]+ DTEMP_SIGNIFICANT < temperature_measurements[int((15*60)/TEMP_CHECK_PERIOD + 0.5)]); // the last check is for significancy
+  sinking = sinking && (temperature_measurements[0]+ DTEMP_SIGNIFICANT_FALLING < temperature_measurements[int((15*60)/TEMP_CHECK_PERIOD + 0.5)]); // the last check is for significancy
   return sinking;
 }
 

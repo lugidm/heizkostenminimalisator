@@ -12,7 +12,9 @@
 #define AVG_BEGIN_VAL -66.6
 
 ///////////////////////////// TODO: change by user //////////////////////
-#define DTEMP_SIGNIFICANT 10.f //degrees celsius or Kelvin
+#define DTEMP_SIGNIFICANT_RISING 10.f //degrees celsius or Kelvin
+#define DTEMP_SIGNIFICANT_FALLING 5.f //degrees celsius or Kelvin
+
 #define TEMP_COOL_DOWN 100.f //degrees celsius
 
 
