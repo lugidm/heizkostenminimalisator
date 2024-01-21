@@ -57,7 +57,7 @@ Is driven by PIN_MOTOR_OUT (analog) between the voltages pwm_closed to pwm_open 
 
 ## FLASH image to ESP32:
 Ubuntu:
-	1. check where the ESP32 is connecting to in /dev/tty**** . Normally (/dev/ttyUSB0)
+	1. check where the ESP32 is connecting to in /dev/tty**** . Normally (/dev/ttyUSB0) or /dev/ttyACM0
 	2. add your current user to dialout - group (sudo adduser <username> dialout)
 	3. change the owner of /dev/tty** to the current user: sudo chown username /dev/ttyUSB0
 	Windows:

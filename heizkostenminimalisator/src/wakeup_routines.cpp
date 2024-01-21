@@ -1,7 +1,7 @@
 // Look at: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/deep-sleep-stub.html
 #include "wakeup_routines.h"
 
-StateVariables state_variables;
+RTC_DATA_ATTR StateVariables state_variables;
 
 //this function defines the wakeups but also the interrupts (every )
 void setupWakeUpRoutines(){
@@ -10,8 +10,11 @@ void setupWakeUpRoutines(){
     for (uint8_t i = 0; i<NUM_TEMP_MEASUREMENTS; i++){
         state_variables.temperature_measurements[i] = 0;
     }
+    esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_ALL);
+
     esp_sleep_enable_timer_wakeup(TEMP_CHECK_PERIOD*1000000);
     esp_sleep_enable_ext0_wakeup(PIN_OVEN_DOOR, 1);
+    rtc_gpio_pullup_en(PIN_OVEN_DOOR);
     state_variables.thermo_timer = timerBegin(0, 80, true);  // second argument is the dividor. The timer interrupts with a frequency of 80/dividor MHz
 
     timerAttachInterrupt(state_variables.thermo_timer, &onTimer, true);
@@ -22,10 +25,9 @@ void setupWakeUpRoutines(){
 StateVariables* get_state_vars(){
     return &state_variables;
 }
-// this function is weak linked -> it gets overwritten easily. esp_default_wake... has to be called immidiately in the beginnning
+//this function is weak linked -> it gets overwritten easily. esp_default_wake... has to be called immidiately in the beginnning
 void RTC_IRAM_ATTR esp_wake_deep_sleep(void){  
     esp_default_wake_deep_sleep();
-    return;
     esp_sleep_wakeup_cause_t wakeup_reason;
     wakeup_reason = esp_sleep_get_wakeup_cause();
     switch (wakeup_reason)
@@ -47,7 +49,7 @@ void RTC_IRAM_ATTR esp_wake_deep_sleep(void){
         state_variables.highest_temperature = -1;
         state_variables.temperature_closure_slope = 0;
         state_variables.temperature_closure_offset = 0;
-        state_variables.state = STATE_NORMAL_BOOT;
+        state_variables.state = STATE_READ_T;  //NORMAL_BOOT
         break;
     default:
         break;
@@ -68,7 +70,7 @@ void delayedSleepDisable(){
 }
 
 bool delayedSleepIsSet(){
-    return timerAlarmEnabled(state_variables.sleep_timer);
+    return state_variables.sleep_timer != NULL && timerAlarmEnabled(state_variables.sleep_timer);
 }
 
 void IRAM_ATTR onTimer(){ // This is the function that gets called every TEMP_CHECK_PERIOD seconds it is not nice to put everything in the ISR but since we interrupt every 5 Minutes, this should do:)
@@ -77,7 +79,7 @@ void IRAM_ATTR onTimer(){ // This is the function that gets called every TEMP_CH
 }
 
 void IRAM_ATTR sleepTimerISR(){  // This wrapper function gets called by the interrupt. Its only purpose is to let put the ESP32 into sleep mode add here any necessary pre-sleep function-calls
-    esp_deep_sleep_start();
+    esp_deep_sleep_start(); /////////////////TODO: mitigate this to a normal loop function call!!!!!
 }
 
 /*

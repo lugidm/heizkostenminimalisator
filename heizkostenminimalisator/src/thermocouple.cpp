@@ -1,5 +1,5 @@
 #include "thermocouple.h"
-
+#define DEBUG
 
 Thermocouple::Thermocouple() : thermocouple(MAXCLK, MAXCS, MAXDO) {
   //this->thermocouple((int8_t)MAXCLK, (int8_t)MAXCS, (int8_t)MAXDO);
@@ -21,6 +21,7 @@ Thermocouple::Thermocouple() : thermocouple(MAXCLK, MAXCS, MAXDO) {
 
 //this function reads the temperature (multiple times and averages the values over the averaging time)
 double Thermocouple::read_temperature(uint16_t averaging_cycles){//no sleep in this function because it gets called in a ISR!!!
+  return 100.f;
   uint16_t avg_counter = 0;
   uint8_t retry_counter = 0;
   double averaged_val = AVG_BEGIN_VAL;
@@ -56,14 +57,19 @@ bool Thermocouple::burning(double* temperature_measurements){
 
 bool Thermocouple::temperature_rising_significantly(double* temperature_measurements){
   bool rising = true;
-  for (uint8_t i = 0; i < int((15*60)/TEMP_CHECK_PERIOD); i++){// Check over the last 15 minutes!!!
+  for (uint8_t i = 0; i < int((15*60)/(TEMP_CHECK_PERIOD)); ++i){// Check over the last 15 minutes!!!
     rising = rising && (temperature_measurements[i] > temperature_measurements[i+1] &&  //check if rising in the last 15 minutes
                         temperature_measurements[i] > 0 && temperature_measurements[i+1] > 0 &&
                         temperature_measurements[i] != FAULT_OPEN && temperature_measurements[i+1] != FAULT_OPEN &&
                         temperature_measurements[i] != FAULT_SHORT_GND && temperature_measurements[i+1] != FAULT_SHORT_GND &&
                         temperature_measurements[i] != FAULT_SHORT_VCC && temperature_measurements[i+1] != FAULT_SHORT_VCC);
+   
   }
-  rising = rising && (temperature_measurements[0] > temperature_measurements[int((15*60)/TEMP_CHECK_PERIOD + 0.5)] + DTEMP_SIGNIFICANT_RISING); // the last check is for significancy
+  #ifdef DEBUG
+  Serial.print("rising = ");
+  Serial.println(rising);
+  #endif
+  rising = rising && (temperature_measurements[0] > temperature_measurements[int((15*60)/(TEMP_CHECK_PERIOD) + 0.5)] + DTEMP_SIGNIFICANT_RISING); // the last check is for significancy
   return rising;
 }
 
@@ -72,14 +78,14 @@ bool Thermocouple::temperature_sinking_significantly(double *temperature_measure
   sinking = (temperature_measurements[0] != FAULT_OPEN && temperature_measurements[1] != FAULT_OPEN &&
           temperature_measurements[0] != FAULT_SHORT_GND && temperature_measurements[1] != FAULT_SHORT_GND &&
           temperature_measurements[0] != FAULT_SHORT_VCC && temperature_measurements[1] != FAULT_SHORT_VCC);
-  for (uint8_t i = 0; i < int((15*60)/TEMP_CHECK_PERIOD + 0.5); i++){// Check over the last 15 minutes!!!
+  for (int i = 0; i < int((15*60)/(TEMP_CHECK_PERIOD) + 0.5); i++){// Check over the last 15 minutes!!!
     sinking = sinking && (temperature_measurements[i] < temperature_measurements[i+1] &&  //check if sinking in the last 15 minutes
                         temperature_measurements[i] > 0 && temperature_measurements[i+1] > 0 &&
                         temperature_measurements[i] != FAULT_OPEN && temperature_measurements[i+1] != FAULT_OPEN &&
                         temperature_measurements[i] != FAULT_SHORT_GND && temperature_measurements[i+1] != FAULT_SHORT_GND &&
                         temperature_measurements[i] != FAULT_SHORT_VCC && temperature_measurements[i+1] != FAULT_SHORT_VCC);
   }
-  sinking = sinking && (temperature_measurements[0]+ DTEMP_SIGNIFICANT_FALLING < temperature_measurements[int((15*60)/TEMP_CHECK_PERIOD + 0.5)]); // the last check is for significancy
+  sinking = sinking && (temperature_measurements[0]+ DTEMP_SIGNIFICANT_FALLING < temperature_measurements[int((15*60)/(TEMP_CHECK_PERIOD) + 0.5)]); // the last check is for significancy
   return sinking;
 }
 

@@ -2,6 +2,7 @@
 #define WAKEUP_ROUTINES_H
 #include <Arduino.h>
 #include <esp_sleep.h>
+#include "driver/rtc_io.h"
 
 #include "state_definitions.h"
 #include "state_var_struct.h"

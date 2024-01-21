@@ -1,4 +1,5 @@
 #include "motor_control.h"
+#define UNIT_TESTS //uncomment this line for normal behaviour! this simplifies some functions for testing
 
 Motor::Motor() {
     this->cur_position.cur_closure = -1;
@@ -9,6 +10,7 @@ Motor::Motor() {
 void Motor::open_completely() {
     this->cur_position.cur_closure = MOTOR_OPENING_BURNING;
     this->cur_position.cur_pwm = this->pwm_opened;
+    
     dacWrite(PIN_MOTOR_OUT, this->pwm_opened);
 }
 

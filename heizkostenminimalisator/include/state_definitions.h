@@ -7,7 +7,8 @@
 #define STATE_BURNING 4U
 #define STATE_BURN_OFF 5U
 #define STATE_COOL_DOWN 6U
-
+#include <Arduino.h>
+void print_state(uint8_t state);
 
 
 #endif
