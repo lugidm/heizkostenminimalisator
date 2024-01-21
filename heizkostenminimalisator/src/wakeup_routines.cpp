@@ -8,6 +8,7 @@
 
 //this function defines the wakeups but also the interrupts (every )
 void setupWakeUpRoutines(){
+    return;
     state_variables.state = STATE_NORMAL_BOOT;
     state_variables.task_measure_temperature = true;
     for (uint8_t i = 0; i<NUM_TEMP_MEASUREMENTS; i++){

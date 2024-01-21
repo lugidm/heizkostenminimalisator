@@ -4,7 +4,7 @@
 #include "thermocouple.h"
 #include "motor_control.h"
 #include "display.h"
-//#define DEBUG  //uncomment this line when you want serial output!
+#define DEBUG  //uncomment this line when you want serial output!
 ////// TODO: ADAPT AS WISHED ///////
 #define ATTENTION_PERIOD 30 // this is a period given in minutes after which the Microcontroller goes to sleep if e.g. the oven door was only opened accidentaly 
 #define COOL_DOWN_PERIOD 30 // After this period, given in minutes, the esp will go to sleep and therefore, the motor will be set to closed completely
@@ -25,13 +25,13 @@ void setup() {
   #ifdef DEBUG
   Serial.begin(9600);
   delay(1000);
+  Serial.println("Hello World");
   #endif
   setup_pins();
   motor = Motor();
   thermocouple = Thermocouple();
   output_display = OutputDisplay();
   state_time_counter = 0;
-
 }
 
 
@@ -41,7 +41,9 @@ void loop() {
       state_variables.task_measure_temperature = false;
       thermocouple.add_temperature_measurement(&state_variables);
     }
-    
+  #ifdef DEBUG
+  Serial.println("In Loop");
+  #endif
   output_display.writeState(state_variables.state, state_time_counter);
   output_display.writeMotor(motor.get_cur_position().cur_closure);
   output_display.writeTemp(state_variables.temperature_measurements);
