@@ -1,7 +1,12 @@
 #ifndef THERMOCOUPLE_H
 #define THERMOCOUPLE_H
 #include <Adafruit_MAX31855.h>
-#include "wakeup_routines.h"
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_MAX31855.h>
+
+#include "state_var_struct.h"
+
 #define MAXDO   19
 #define MAXCS   23
 #define MAXCLK  5

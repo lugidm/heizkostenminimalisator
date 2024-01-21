@@ -1,7 +1,5 @@
 #include "thermocouple.h"
-#include <SPI.h>
-#include <Wire.h>
-#include <Adafruit_MAX31855.h>
+
 
 Thermocouple::Thermocouple() : thermocouple(MAXCLK, MAXCS, MAXDO) {
   //this->thermocouple((int8_t)MAXCLK, (int8_t)MAXCS, (int8_t)MAXDO);
@@ -84,7 +82,6 @@ bool Thermocouple::temperature_sinking_significantly(double *temperature_measure
   sinking = sinking && (temperature_measurements[0]+ DTEMP_SIGNIFICANT_FALLING < temperature_measurements[int((15*60)/TEMP_CHECK_PERIOD + 0.5)]); // the last check is for significancy
   return sinking;
 }
-
 
 void Thermocouple::add_temperature_measurement(StateVariables* state_variables){
     double current_temp = this->read_temperature(1000); // this also stores errors! This has to be checked later in the procedure

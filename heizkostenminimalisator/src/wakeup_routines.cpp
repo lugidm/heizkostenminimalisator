@@ -1,14 +1,10 @@
 // Look at: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/deep-sleep-stub.html
-
-
-#include <esp_sleep.h>
 #include "wakeup_routines.h"
-#include "pin_setup.h"
-#include "thermocouple.h"
+
+StateVariables state_variables;
 
 //this function defines the wakeups but also the interrupts (every )
 void setupWakeUpRoutines(){
-    return;
     state_variables.state = STATE_NORMAL_BOOT;
     state_variables.task_measure_temperature = true;
     for (uint8_t i = 0; i<NUM_TEMP_MEASUREMENTS; i++){
@@ -23,9 +19,13 @@ void setupWakeUpRoutines(){
     timerAlarmEnable(state_variables.thermo_timer);
 }
 
+StateVariables* get_state_vars(){
+    return &state_variables;
+}
 // this function is weak linked -> it gets overwritten easily. esp_default_wake... has to be called immidiately in the beginnning
 void RTC_IRAM_ATTR esp_wake_deep_sleep(void){  
     esp_default_wake_deep_sleep();
+    return;
     esp_sleep_wakeup_cause_t wakeup_reason;
     wakeup_reason = esp_sleep_get_wakeup_cause();
     switch (wakeup_reason)
@@ -54,10 +54,6 @@ void RTC_IRAM_ATTR esp_wake_deep_sleep(void){
     }
 }
 
-void sleepysloopy(){
-    delay(500);
-    esp_deep_sleep_start();
-}
 
 void delayedSleepEnable(int32_t delay_sec){ //int32 because otherwise it is possible to get an overflow (*10000000 when appliying seconds)
     state_variables.sleep_timer = timerBegin(1, 80, true);
